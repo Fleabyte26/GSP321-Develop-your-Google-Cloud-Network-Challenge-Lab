@@ -2,6 +2,7 @@ Google Cloud Challenge Lab: GSP321 Reference Guide
 Set Up and Configure a Cloud Environment in Google Cloud
 -----Step 1: Environment Setup & Variables
 Run this block in Cloud Shell to initialize the project environment variables:
+
 export REGION="europe-west3"
 export ZONE="europe-west3-a"
 export PROJECT_ID=$(gcloud config get-value project)
@@ -14,6 +15,7 @@ echo "Project: PROJECTID|Region:REGION | Zone: $ZONE"
 
 -----Step 2: Task 1 — Create Development VPC Manually
 Provision the custom development network along with dedicated subnets for the WordPress application cluster and management operations:
+
 gcloud compute networks create griffin-dev-vpc --subnet-mode=custom
 
 gcloud compute networks subnets create griffin-dev-wp \
@@ -29,6 +31,7 @@ gcloud compute networks subnets create griffin-dev-mgmt \
 Checkpoint: Click Check my progress on Create development VPC manually.
 -----Step 3: Task 2 — Create Production VPC Manually
 Provision the custom production network along with separate subnets for WordPress components and management services:
+
 gcloud compute networks create griffin-prod-vpc --subnet-mode=custom
 
 gcloud compute networks subnets create griffin-prod-wp \
@@ -44,6 +47,7 @@ gcloud compute networks subnets create griffin-prod-mgmt \
 Checkpoint: Click Check my progress on Create production VPC manually.
 -----Step 4: Task 3 — Create Bastion Host
 Configure firewall rules permitting SSH on both networks, then deploy the dual-homed bastion host connecting to both management subnets:
+
 gcloud compute firewall-rules create griffin-dev-allow-ssh \
   --network=griffin-dev-vpc \
   --allow=tcp:22 \
@@ -64,6 +68,7 @@ gcloud compute instances create griffin-bastion \
 Checkpoint: Click Check my progress on Create bastion host.
 -----Step 5: Task 4 — Create and Configure Cloud SQL Instance
 Provision a Cloud SQL MySQL database instance and configure user credentials:
+
 gcloud sql instances create griffin-dev-db \
     --database-version=MYSQL_5_7 \
     --region=$REGION \
@@ -89,6 +94,7 @@ gcloud container clusters get-credentials griffin-dev --zone=$ZONE
 Checkpoint: Click Check my progress on Create Kubernetes cluster.
 -----Step 7: Task 6 — Prepare the Kubernetes Cluster
 Download deployment manifests, populate secrets, and create the Cloud SQL proxy service account key:
+
 cd ~
 gcloud storage cp -r gs://spls/gsp321/wp-k8s .
 cd ~/wp-k8s
@@ -106,6 +112,7 @@ Checkpoint: Click Check my progress on Prepare the Kubernetes cluster.
 
 -----Step 8: Task 7 — Create a WordPress Deployment
 Connect WordPress to the Cloud SQL instance and expose it via a Load Balancer service:
+
 cd ~/wp-k8s
 export CONNECTION_NAME=$(gcloud sql instances describe griffin-dev-db --format='value(connectionName)')
 sed -i "s/YOUR_SQL_INSTANCE/${CONNECTION_NAME}/g" wp-deployment.yaml
@@ -128,6 +135,7 @@ Checkpoint: Click Check my progress on Enable monitoring.
 
 -----Step 10: Task 9 — Provide Access for an Additional Engineer
 Grant the project Editor role to the second user account:
+
 export USER_2=""
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
